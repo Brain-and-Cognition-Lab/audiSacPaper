@@ -1,0 +1,47 @@
+# Data — never committed
+######################
+*.asc
+*.edf
+*.csv
+*.pkl
+*.parquet
+*.npy
+*.mat
+data_raw/
+data_preprocessed/*/*
+!data_preprocessed/*/.gitkeep
+
+# Generated outputs (regenerate by running the notebooks)
+######################
+data_for_stats_anova_rw/*
+!data_for_stats_anova_rw/.gitkeep
+summaries/*/*
+!summaries/*/.gitkeep
+
+# Python
+######################
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv/
+
+# Pixi
+######################
+.pixi/*
+!.pixi/config.toml
+
+# Jupyter
+######################
+.ipynb_checkpoints/
+
+# Office lock/temp files
+######################
+~$*
+
+# Agent guidance — local only, not part of the published repo
+######################
+CLAUDE.md
+.claude/

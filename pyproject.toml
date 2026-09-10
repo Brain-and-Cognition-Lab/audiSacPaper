@@ -1,0 +1,33 @@
+[project]
+name = "audisacpaper"
+version = "1.0.0"
+description = "Analysis code for the saccades & audition manuscript"
+readme = "README.md"
+requires-python = ">=3.12"
+# Pinned to the environment that produced the published figures.
+# pandas 3.x in particular changes DataFrameGroupBy.apply semantics, which the
+# per-subject quantile binning in src/binning.py relies on.
+dependencies = [
+    "ipykernel>=6.29.5",
+    "matplotlib>=3.10.7,<4",
+    "numpy>=2.3.4,<3",
+    "pandas>=2.3.3,<3",
+    "scipy>=1.16.3,<2",
+    "statsmodels>=0.14.5,<0.15",
+]
+
+# --------------------------------------------------------------------------
+# Pixi is used only to get R, which fits the repeated-measures ANOVAs in
+# 04_stats_anova.ipynb (base R aov(), called through Rscript). An R installed
+# any other way works too, as long as Rscript is on PATH.
+# --------------------------------------------------------------------------
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["win-64"]
+
+[tool.pixi.pypi-dependencies]
+audisacpaper = { path = ".", editable = true }
+
+[tool.pixi.dependencies]
+r-base = ">=4.4,<4.5"
+jupyter = ">=1.1.1,<2"
