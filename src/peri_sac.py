@@ -154,7 +154,7 @@ def calculate_baseline_metrics_from_trials(data, baseline_range, time_reference=
         - saccade_count: Number of unique saccades in baseline period
         - saccade_rate_hz: Saccade rate in Hz (per-trial average)
         - saccade_rate_kernel: NaN (kernel rate has no single baseline value)
-        - saccade_count_normalized: Always 1.0 (baseline normalized to itself = 100%)
+        - saccade_count_normalized(_spec): Always 0.0 (% change of the baseline from itself)
         - p_omission: Proportion of trials with no response
         - p_wrong_choice: Proportion of wrong responses among responses given
         - p_wrong_response: Proportion with omission or wrong choice
@@ -231,8 +231,9 @@ def calculate_baseline_metrics_from_trials(data, baseline_range, time_reference=
             baseline_dict[subject]['saccade_count'] = n_saccades
             baseline_dict[subject]['saccade_rate_hz'] = saccade_rate_hz
             baseline_dict[subject]['saccade_rate_kernel'] = np.nan  # Kernel rate is time-dependent, no single baseline value
-            baseline_dict[subject]['saccade_count_normalized'] = 1.0  # Normalized baseline is always 1.0 (100%)
-            baseline_dict[subject]['saccade_count_normalized_spec'] = 1.0  # Special normalized baseline is always 1.0 (100%)
+            # The normalized counts are % change from this baseline, so the baseline itself is 0 %.
+            baseline_dict[subject]['saccade_count_normalized'] = 0.0
+            baseline_dict[subject]['saccade_count_normalized_spec'] = 0.0
             baseline_dict[subject]['p_omission'] = p_omission
             baseline_dict[subject]['p_wrong_choice'] = p_wrong_choice
             baseline_dict[subject]['p_wrong_response'] = p_wrong_response
