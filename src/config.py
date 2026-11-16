@@ -61,10 +61,38 @@ EXPERIMENT_CONFIGS = {
         'rt_ylim': (750, 900),
         'sdt_column': 'sound_pitch',
     },
+    'EX_5': {
+        'name': 'EX_5',
+        'paper_label': 'Exp 4. monaural-none',
+        'description': 'No task: 6 ms monaural tones the participants were told to ignore; '
+                       'no responses, so only the saccade count is analysed',
+        'target_field': 'sound_pitch',
+        'response_values': (),
+        'sdt_column': None,                # no task, so no SDT
+    },
+    'EX_11': {
+        'name': 'EX_11',
+        'paper_label': 'Exp 5. binaural-direction',
+        'description': 'Sound localization (left/right), 10 ms binaural pink noise with ITD, '
+                       'answered on the UP/DOWN keys under two counterbalanced key mappings',
+        'target_field': 'sound_direction',
+        # `response` is already decoded from the key to a side by src/preprocessing_ex11.py,
+        # so it holds 'left'/'right' as in the other localization experiments.
+        'response_values': ('left', 'right'),
+        'rt_ylim': (600, 750),
+        'sdt_column': 'sound_direction',
+        # A participant is a PAIR of recordings, one per key mapping, assembled into one table
+        # under its own name; see src/preprocessing_ex11.py and src/exclusions.py.
+        'response_mappings': ('upL', 'upR'),
+        'data_file': 'long_format_ex11_all.csv',
+    },
 }
 
+# Experiments 1a, 1b, 2 and 3: Figures 2 and 4. Exp 4 (EX_5) has Figure 3 to itself, Exp 5
+# (EX_11) Figure 5; the supplementary figures show all five task experiments (TASK_EXPERIMENTS).
 EXPERIMENTS = ['EX_1', 'EX_9', 'EX_7', 'EX_3']
 EXPERIMENT_LABELS = [EXPERIMENT_CONFIGS[e]['paper_label'] for e in EXPERIMENTS]
+TASK_EXPERIMENTS = ['EX_1', 'EX_9', 'EX_7', 'EX_3', 'EX_11']
 
 
 # ============================================================================
@@ -298,11 +326,13 @@ def prepare_alternative_data(data_raw, sound_selection='both'):
 
 def load_experiment_data(experiment, data_directory=None):
     """
-    Load and prepare data for one experiment ('EX_1', 'EX_9', 'EX_7', 'EX_3').
+    Load and prepare data for one experiment (see EXPERIMENT_CONFIGS).
 
-    Reads long_format_alt_all.csv (one row per saccade, carrying the columns of
-    both sounds in the trial) and runs it through prepare_alternative_data() to
-    add the unified, closest-sound columns the analyses expect.
+    Reads the experiment's preprocessed table -- long_format_alt_all.csv, or the
+    `data_file` given in its config (EX_11: long_format_ex11_all.csv) -- with one row
+    per saccade carrying the columns of both sounds in the trial, and runs it through
+    prepare_alternative_data() to add the unified, closest-sound columns the analyses
+    expect. Exp 5's exclusions are NOT applied here; see src/exclusions.py.
 
     Parameters
     ----------
@@ -329,7 +359,8 @@ def load_experiment_data(experiment, data_directory=None):
     if data_directory is None:
         data_directory = f'data_preprocessed/{experiment}'
 
-    file_path = os.path.join(data_directory, 'long_format_alt_all.csv')
+    data_file = EXPERIMENT_CONFIGS[experiment].get('data_file', 'long_format_alt_all.csv')
+    file_path = os.path.join(data_directory, data_file)
 
     print(f"Loading: {file_path}")
     data_raw = pd.read_csv(file_path, low_memory=False)
